@@ -1,48 +1,51 @@
-def lire_contenu_fichier(nom_fichier):
+ef read_file_content(file_name):
     try:
-        with open(nom_fichier, 'r') as fichier:
-            contenu = fichier.read()
-        return contenu
+        with open(file_name, 'r') as file:
+            content = file.read()
+        return content
     except FileNotFoundError:
-        print(f"Le fichier {nom_fichier} n'a pas été trouvé.")
+        print(f"The file {file_name} was not found.")
         return None
 
-# Exemple d'utilisation
-nom_fichier = 'all flags.txt'
-contenu_fichier = lire_contenu_fichier(nom_fichier)
+# Example of usage
+file_name = 'all flags.txt'
+file_content = read_file_content(file_name)
 
 
-
-def inserer_apres_mot_cle(fichier_source, fichier_destination, mot_cle, nouvelle_chaine):
+def insert_after_keyword(source_file, destination_file, keyword, new_string):
     try:
-        # Créer le fichier source s'il n'existe pas encore
-        with open(fichier_source, 'a') as file:
-            file.write("")  # Écrire une chaîne vide pour créer le fichier
+        # Create the source file if it doesn't exist yet
+        with open(source_file, 'a') as file:
+            file.write("")  # Write an empty string to create the file
 
-        # Lire le contenu du fichier source
-        with open(fichier_source, 'r') as file:
-            contenu_source = file.read()
+        # Read the content of the source file
+        with open(source_file, 'r') as file:
+            source_content = file.read()
 
-        # Trouver l'emplacement du mot-clé
-        index_mot_cle = contenu_source.find(mot_cle)
+        # Find the location of the keyword
+        index_keyword = source_content.find(keyword)
 
-        if index_mot_cle != -1:
-            # Insérer la nouvelle chaîne après le mot-clé
-            contenu_modifie = contenu_source[:index_mot_cle + len(mot_cle)] + nouvelle_chaine + contenu_source[index_mot_cle + len(mot_cle):]
+        if index_keyword != -1:
+            # Insert the new string after the keyword
+            modified_content = (
+                source_content[:index_keyword + len(keyword)] +
+                new_string +
+                source_content[index_keyword + len(keyword):]
+            )
             
-            # Écrire le contenu modifié dans le fichier destination
-            with open(fichier_destination, 'w') as file:
-                file.write(contenu_modifie)
-            print("Opération réussie : La nouvelle chaîne a été insérée après le mot-clé.")
+            # Write the modified content to the destination file
+            with open(destination_file, 'w') as file:
+                file.write(modified_content)
+            print("Operation successful: The new string has been inserted after the keyword.")
         else:
-            print("Mot-clé non trouvé dans le fichier source.")
+            print("Keyword not found in the source file.")
     except FileNotFoundError:
-        print(f"Le fichier {fichier_source} n'a pas pu être créé ou trouvé.")
+        print(f"The file {source_file} could not be created or found.")
 
-# Exemple d'utilisation
-fichier_source = 'source.json'
-fichier_destination = 'save.json'
-mot_cle = '"flags":['
-nouvelle_chaine = contenu_fichier
+# Example of usage
+source_file = 'source.json'
+destination_file = 'save.json'
+keyword = '"flags":['
+new_string = file_content
 
-inserer_apres_mot_cle(fichier_source, fichier_destination, mot_cle, nouvelle_chaine)
+insert_after_keyword(source_file, destination_file, keyword, new_string)
