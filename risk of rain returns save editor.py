@@ -1,94 +1,95 @@
 import tkinter as tk
 from tkinter import filedialog
 
-def lire_contenu_fichier(nom_fichier):
+def read_file_content(file_name):
     try:
-        with open(nom_fichier, 'r') as fichier:
-            contenu = fichier.read()
-        return contenu
+        with open(file_name, 'r') as file:
+            content = file.read()
+        return content
     except FileNotFoundError:
-        print(f"Le fichier {nom_fichier} n'a pas été trouvé.")
+        print(f"The file {file_name} was not found.")
         return None
 
-data = lire_contenu_fichier("all flags.txt")
+data = read_file_content("all flags.txt")
 
-def inserer_apres_mot_cle(fichier_source, fichier_destination, mot_cle, nouvelle_chaine):
+def insert_after_keyword(source_file, destination_file, keyword, new_string):
     try:
-        # Créer le fichier source s'il n'existe pas encore
-        with open(fichier_source, 'a') as file:
-            file.write("")  # Écrire une chaîne vide pour créer le fichier
+        # Create the source file if it doesn't exist yet
+        with open(source_file, 'a') as file:
+            file.write("")  # Write an empty string to create the file
 
-        # Lire le contenu du fichier source
-        with open(fichier_source, 'r') as file:
-            contenu_source = file.read()
+        # Read the content of the source file
+        with open(source_file, 'r') as file:
+            source_content = file.read()
 
-        # Trouver l'emplacement du mot-clé
-        index_mot_cle = contenu_source.find(mot_cle)
+        # Find the location of the keyword
+        keyword_index = source_content.find(keyword)
 
-        if index_mot_cle != -1:
-            # Insérer la nouvelle chaîne après le mot-clé
-            contenu_modifie = contenu_source[:index_mot_cle + len(mot_cle)] + nouvelle_chaine + contenu_source[index_mot_cle + len(mot_cle):]
+        if keyword_index != -1:
+            # Insert the new string after the keyword
+            modified_content = (
+                source_content[:keyword_index + len(keyword)] +
+                new_string +
+                source_content[keyword_index + len(keyword):]
+            )
 
-            
-            # Écrire le contenu modifié dans le fichier destination
-            with open(fichier_destination, 'w') as file:
-                file.write(contenu_modifie)
-            print("Opération réussie : La nouvelle chaîne a été insérée après le mot-clé.")
+            # Write the modified content to the destination file
+            with open(destination_file, 'w') as file:
+                file.write(modified_content)
+            print("Operation successful: The new string has been inserted after the keyword.")
         else:
-            print("Mot-clé non trouvé dans le fichier source.")
+            print("Keyword not found in the source file.")
     except FileNotFoundError:
-        print(f"Le fichier {fichier_source} n'a pas pu être créé ou trouvé.")
+        print(f"The file {source_file} could not be created or found.")
 
-
-def choisir_fichier_source():
-    fichier_source = filedialog.askopenfilename(title="Choisir le fichier source", filetypes=[("Fichiers JSON", "*.json")])
+def choose_source_file():
+    file_source = filedialog.askopenfilename(title="Choose the source file", filetypes=[("JSON files", "*.json")])
     entry_source.delete(0, tk.END)
-    entry_source.insert(0, fichier_source)
+    entry_source.insert(0, file_source)
 
-def choisir_dossier_destination():
-    dossier_destination = filedialog.askdirectory(title="Choisir le dossier de destination")
+def choose_destination_folder():
+    folder_destination = filedialog.askdirectory(title="Choose the destination folder")
     entry_destination.delete(0, tk.END)
-    entry_destination.insert(0, dossier_destination)
+    entry_destination.insert(0, folder_destination)
 
-def executer_programme():
-    fichier_source = entry_source.get()
-    dossier_destination = entry_destination.get()
-    mot_cle = '"flags":['
-    
-    contenu_fichier = lire_contenu_fichier(fichier_source)
+def execute_program():
+    file_source = entry_source.get()
+    folder_destination = entry_destination.get()
+    keyword = '"flags":['
 
-    if contenu_fichier is not None:
-        fichier_destination = f"{dossier_destination}/save.json"
-        nouvelle_chaine = data
+    file_content = read_file_content(file_source)
 
-        inserer_apres_mot_cle(fichier_source, fichier_destination, mot_cle, nouvelle_chaine)
+    if file_content is not None:
+        file_destination = f"{folder_destination}/save.json"
+        new_string = data
 
-# Création de l'interface graphique
-fenetre = tk.Tk()
-fenetre.title("Risk of rain returns save editor")
+        insert_after_keyword(file_source, file_destination, keyword, new_string)
+
+# Creating the graphical interface
+window = tk.Tk()
+window.title("Risk of Rain Returns Save Editor")
 
 # Widgets
-label_source = tk.Label(fenetre, text="Save file:")
-entry_source = tk.Entry(fenetre, width=40)
-button_choisir_source = tk.Button(fenetre, text="Choose", command=choisir_fichier_source)
+label_source = tk.Label(window, text="Save file:")
+entry_source = tk.Entry(window, width=40)
+button_choose_source = tk.Button(window, text="Choose", command=choose_source_file)
 
-label_destination = tk.Label(fenetre, text="Output:")
-entry_destination = tk.Entry(fenetre, width=40)
-button_choisir_destination = tk.Button(fenetre, text="Choose", command=choisir_dossier_destination)
+label_destination = tk.Label(window, text="Output:")
+entry_destination = tk.Entry(window, width=40)
+button_choose_destination = tk.Button(window, text="Choose", command=choose_destination_folder)
 
+button_execute = tk.Button(window, text="Execute", command=execute_program)
 
-button_executer = tk.Button(fenetre, text="Execute", command=executer_programme)
-
-# Placement des widgets
+# Placing the widgets
 label_source.grid(row=0, column=0, padx=5, pady=5)
 entry_source.grid(row=0, column=1, padx=5, pady=5)
-button_choisir_source.grid(row=0, column=2, padx=5, pady=5)
+button_choose_source.grid(row=0, column=2, padx=5, pady=5)
 
 label_destination.grid(row=1, column=0, padx=5, pady=5)
 entry_destination.grid(row=1, column=1, padx=5, pady=5)
-button_choisir_destination.grid(row=1, column=2, padx=5, pady=5)
+button_choose_destination.grid(row=1, column=2, padx=5, pady=5)
 
-button_executer.grid(row=3, column=0, columnspan=3, pady=10)
+button_execute.grid(row=3, column=0, columnspan=3, pady=10)
 
-# Lancement de la boucle principale
-fenetre.mainloop()
+# Launching the main loop
+window.mainloop()
